@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aarush // IIT Hyderabad // Advanced Computational Unit</title>
+  <style>
+    :root {
+      --bg: #050d05;
+      --green: #4ade80;
+      --text: #dbffe7;
+      --text-dim: #4ade8088;
+      --border: #1a3a1a;
+      --panel: #071407;
+      --panel-2: #0a1c0a;
+      --warn: #facc15;
+      --danger: #fb7185;
+      --cyan: #67e8f9;
+      --shadow: 0 0 34px rgba(74, 222, 128, .14);
+      --mono: "JetBrains Mono", "Share Tech Mono", "SFMono-Regular", Consolas, monospace;
+      --display: "Share Tech Mono", "JetBrains Mono", Consolas, monospace;
+      --orbitron: Orbitron, "Eurostile", "Bank Gothic", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: var(--mono);
+      background:
+        linear-gradient(rgba(74, 222, 128, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74, 222, 128, .035) 1px, transparent 1px),
+        radial-gradient(circle at 20% 10%, rgba(74, 222, 128, .10), transparent 32%),
+        radial-gradient(circle at 82% 18%, rgba(103, 232, 249, .055), transparent 28%),
+        var(--bg);
+      background-size: 48px 48px, 48px 48px, auto, auto, auto;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, .035) 0,
+          rgba(255, 255, 255, .035) 1px,
+          transparent 2px,
+          transparent 5px
+        );
+      mix-blend-mode: overlay;
+      opacity: .45;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 31;
+      pointer-events: none;
+      background: radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, .48) 100%);
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 clamp(16px, 4vw, 44px);
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 13, 5, .88);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .28);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      font-family: var(--orbitron);
+      letter-spacing: 0;
+      font-weight: 900;
+      color: var(--green);
+      white-space: nowrap;
+      text-shadow: 0 0 18px rgba(74, 222, 128, .45);
+    }
+
+    .brand-mark span {
+      color: var(--text-dim);
+    }
+
+    .brand-sub {
+      color: var(--text-dim);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link, .status {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .nav-link:hover, .nav-link:focus-visible {
+      color: var(--green);
+      border-color: var(--border);
+      background: rgba(74, 222, 128, .06);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .status {
+      border-color: var(--border);
+      color: var(--green);
+      background: rgba(74, 222, 128, .045);
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px var(--green);
+      animation: pulse 1.15s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .35; transform: scale(.78); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    .shell {
+      width: min(1480px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 100px 0 30px;
+    }
+
+    .terminal-title {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-family: var(--orbitron);
+      font-size: clamp(23px, 3vw, 42px);
+      line-height: 1.02;
+      text-shadow: 0 0 20px rgba(74, 222, 128, .36);
+    }
+
+    .meta {
+      color: var(--text-dim);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(360px, .95fr) minmax(420px, 1.05fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(74, 222, 128, .055), transparent 22%),
+        rgba(7, 20, 7, .92);
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(74, 222, 128, .035);
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(74, 222, 128, .10), transparent 18%, transparent 82%, rgba(74, 222, 128, .055));
+      opacity: .65;
+    }
+
+    .panel-head {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 54px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 13, 5, .58);
+    }
+
+    .panel-title {
+      font-family: var(--orbitron);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      min-height: 28px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      background: rgba(74, 222, 128, .045);
+      transition: color .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .chip.active, .chip:hover {
+      color: var(--bg);
+      border-color: var(--green);
+      background: var(--green);
+    }
+
+    .deck {
+      position: relative;
+      z-index: 1;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .deck-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .key {
+      min-height: 44px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(74, 222, 128, .10), rgba(7, 20, 7, .82));
+      color: var(--text);
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .38);
+      transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease, color .14s ease, background .14s ease;
+      user-select: none;
+    }
+
+    .key:hover, .key:focus-visible {
+      border-color: var(--green);
+      box-shadow: 0 0 18px rgba(74, 222, 128, .18), inset 0 -2px 0 rgba(0, 0, 0, .4);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .key:active {
+      transform: translateY(1px) scale(.99);
+    }
+
+    .key.small {
+      min-height: 36px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .key.num {
+      background: linear-gradient(180deg, rgba(219, 255, 231, .11), rgba(7, 20, 7, .88));
+      font-size: 18px;
+    }
+
+    .key.op {
+      color: var(--green);
+      border-color: #265626;
+    }
+
+    .key.accent {
+      color: var(--bg);
+      background: var(--green);
+      border-color: var(--green);
+      font-weight: 800;
+    }
+
+    .key.warn {
+      color: #170f00;
+      background: var(--warn);
+      border-color: var(--warn);
+    }
+
+    .key.danger {
+      color: #210308;
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .key.wide {
+      grid-column: span 2;
+    }
+
+    .key.tall {
+      grid-row: span 2;
+      min-height: 96px;
+    }
+
+    .label {
+      color: var(--text-dim);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .module {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: rgba(5, 13, 5, .52);
+    }
+
+    .display-panel {
+      min-height: 780px;
+      display: grid;
+      grid-template-rows: auto auto minmax(300px, 1fr) auto;
+    }
+
+    .display-head {
+      position: relative;
+      z-index: 1;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 13, 5, .52);
+    }
+
+    .input-line {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .expr-input, .field, .select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--border);
+      background: rgba(2, 8, 2, .72);
+      color: var(--green);
+      padding: 0 12px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .expr-input:focus, .field:focus, .select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, .09);
+    }
+
+    .readouts {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .readout {
+      padding: 12px 14px;
+      border-right: 1px solid var(--border);
+      min-width: 0;
+    }
+
+    .readout:last-child {
+      border-right: 0;
+    }
+
+    .readout strong {
+      display: block;
+      color: var(--green);
+      font-family: var(--orbitron);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .readout span {
+      color: var(--text-dim);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .console {
+      position: relative;
+      z-index: 1;
+      padding: 16px;
+      overflow: auto;
+      font-family: var(--display);
+      background:
+        linear-gradient(180deg, rgba(5, 13, 5, .18), rgba(5, 13, 5, .62)),
+        rgba(0, 0, 0, .22);
+    }
+
+    .console-line {
+      border: 1px solid rgba(26, 58, 26, .85);
+      background: rgba(3, 12, 3, .68);
+      padding: 13px;
+      margin-bottom: 12px;
+      animation: lineIn .18s ease both;
+    }
+
+    @keyframes lineIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .prompt {
+      color: var(--text-dim);
+      font-size: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .math {
+      color: var(--text);
+      font-size: clamp(18px, 2vw, 28px);
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .result {
+      color: var(--green);
+      font-size: clamp(18px, 2.2vw, 30px);
+      line-height: 1.35;
+      margin-top: 8px;
+    }
+
+    .frac {
+      display: inline-grid;
+      grid-template-rows: auto auto;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 4px;
+      text-align: center;
+      line-height: 1.05;
+    }
+
+    .frac .top {
+      border-bottom: 1px solid currentColor;
+      padding: 0 5px 3px;
+    }
+
+    .frac .bot {
+      padding: 3px 5px 0;
+    }
+
+    .sqrt::before { content: "√"; }
+    .sqrt {
+      display: inline-block;
+      border-top: 1px solid currentColor;
+      padding: 0 4px;
+    }
+
+    .matrix {
+      display: inline-grid;
+      gap: 7px 14px;
+      padding: 8px 12px;
+      margin: 0 4px;
+      border-left: 2px solid var(--green);
+      border-right: 2px solid var(--green);
+      vertical-align: middle;
+    }
+
+    .integral, .derivative {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+    }
+
+    .drawer {
+      position: fixed;
+      top: 72px;
+      right: 0;
+      bottom: 0;
+      z-index: 22;
+      width: min(460px, 100vw);
+      padding: 16px;
+      border-left: 1px solid var(--border);
+      background: rgba(5, 13, 5, .97);
+      transform: translateX(105%);
+      transition: transform .22s ease;
+      box-shadow: -18px 0 60px rgba(0, 0, 0, .42);
+      overflow: auto;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .drawer h2, .modal h2 {
+      margin: 0;
+      color: var(--green);
+      font-family: var(--orbitron);
+      font-size: 16px;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .list-item {
+      display: grid;
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: rgba(74, 222, 128, .035);
+    }
+
+    .list-item button {
+      justify-self: start;
+    }
+
+    .muted {
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 21;
+      background: rgba(0, 0, 0, .56);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 25;
+      top: 50%;
+      left: 50%;
+      width: min(760px, calc(100vw - 24px));
+      max-height: calc(100vh - 108px);
+      transform: translate(-50%, -48%) scale(.98);
+      opacity: 0;
+      pointer-events: none;
+      overflow: auto;
+      border: 1px solid var(--border);
+      background: rgba(5, 13, 5, .97);
+      box-shadow: 0 22px 90px rgba(0, 0, 0, .62), var(--shadow);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    .modal.open {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mode-card {
+      min-height: 88px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      background: rgba(74, 222, 128, .04);
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--green);
+      background: rgba(74, 222, 128, .08);
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sheet {
+      display: grid;
+      grid-template-columns: 40px repeat(4, minmax(56px, 1fr));
+      gap: 4px;
+      align-items: stretch;
+    }
+
+    .cell, .cell-head {
+      min-height: 38px;
+      border: 1px solid var(--border);
+      background: rgba(2, 8, 2, .7);
+      color: var(--green);
+      padding: 6px;
+      min-width: 0;
+    }
+
+    .cell-head {
+      display: grid;
+      place-items: center;
+      color: var(--text-dim);
+      background: rgba(74, 222, 128, .05);
+      font-size: 12px;
+    }
+
+    .bottom-bar {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(5, 13, 5, .7);
+    }
+
+    .history {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .history button {
+      white-space: nowrap;
+      max-width: 240px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .qr {
+      display: inline-grid;
+      grid-template-columns: repeat(25, 8px);
+      grid-auto-rows: 8px;
+      padding: 12px;
+      background: #dfffe8;
+      border: 8px solid #dfffe8;
+      box-shadow: 0 0 22px rgba(74, 222, 128, .22);
+    }
+
+    .qr span.on { background: #061006; }
+    .qr span.off { background: #dfffe8; }
+
+    @media (max-width: 1120px) {
+      .workspace { grid-template-columns: 1fr; }
+      .display-panel { min-height: 640px; }
+      .terminal-title { grid-template-columns: 1fr; }
+      .meta { text-align: left; }
+    }
+
+    @media (max-width: 760px) {
+      .nav {
+        height: auto;
+        min-height: 76px;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 14px;
+        gap: 10px;
+      }
+
+      .nav-links { justify-content: flex-start; }
+      .shell { width: min(100vw - 16px, 1480px); padding-top: 156px; }
+      .deck-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .readouts, .input-line, .bottom-bar { grid-template-columns: 1fr; }
+      .readout { border-right: 0; border-bottom: 1px solid var(--border); }
+      .mode-grid, .tool-grid, .mini-grid { grid-template-columns: 1fr; }
+      .key { min-height: 42px; font-size: 13px; }
+      .key.tall { min-height: 42px; grid-row: span 1; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Primary navigation">
+    <div class="brand">
+      <div class="brand-mark">AARUSH <span>// IITH</span></div>
+      <div class="brand-sub">AARUSH // IIT HYDERABAD // ADVANCED COMPUTATIONAL UNIT</div>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="#calculator">Calculator</a>
+      <a class="nav-link" href="#mathbox">MathBox</a>
+      <a class="nav-link" href="#spreadsheet">Spreadsheet</a>
+      <a class="nav-link" href="#docs">Docs</a>
+      <span class="status"><span class="dot"></span> SYS STATUS: ACTIVE</span>
+    </div>
+  </nav>
+
+  <main class="shell" id="calculator">
+    <section class="terminal-title">
+      <div>
+        <h1>AARUSH // IIT HYDERABAD // ADVANCED COMPUTATIONAL UNIT</h1>
+        <div class="muted">Scientific terminal calculator with natural textbook rendering, replay memory, matrices, statistics, units, and simulations.</div>
+      </div>
+      <div class="meta">
+        OWNER: AARUSH<br />
+        INSTITUTE: IIT Hyderabad<br />
+        BUILD: CLASSWIZ_TERMINAL_V7
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel">
+        <div class="panel-head">
+          <div class="panel-title">LEFT DECK // HARDWARE KEYS</div>
+          <div class="chip-row">
+            <button class="chip active" data-angle="DEG">DEG</button>
+            <button class="chip" data-angle="RAD">RAD</button>
+            <button class="chip" id="engToggle">ENG</button>
+          </div>
+        </div>
+
+        <div class="deck">
+          <div class="module">
+            <div class="label">Functions</div>
+            <div class="deck-grid">
+              <button class="key small" data-action="menu">MENU</button>
+              <button class="key small" data-insert="sin(">sin</button>
+              <button class="key small" data-insert="cos(">cos</button>
+              <button class="key small" data-insert="tan(">tan</button>
+              <button class="key small" data-insert="asin(">sin⁻¹</button>
+              <button class="key small" data-insert="acos(">cos⁻¹</button>
+              <button class="key small" data-insert="atan(">tan⁻¹</button>
+              <button class="key small" data-insert="sinh(">sinh</button>
+              <button class="key small" data-insert="cosh(">cosh</button>
+              <button class="key small" data-insert="tanh(">tanh</button>
+              <button class="key small" data-insert="sqrt(">√</button>
+              <button class="key small" data-insert="^">xʸ</button>
+              <button class="key small" data-insert="abs(">Abs</button>
+              <button class="key small" data-action="factor">FACT</button>
+              <button class="key small" data-insert="round(">Rnd</button>
+              <button class="key small" data-action="ranint">RanInt</button>
+              <button class="key small" data-insert="log(">log</button>
+              <button class="key small" data-insert="ln(">ln</button>
+            </div>
+          </div>
+
+          <div class="module">
+            <div class="label">Calculus / Memory / Solvers</div>
+            <div class="deck-grid">
+              <button class="key small" data-action="integral">∫ dx</button>
+              <button class="key small" data-action="derivative">d/dx</button>
+              <button class="key small" data-action="solver">SOLVE</button>
+              <button class="key small" data-action="matrix">MATRIX</button>
+              <button class="key small" data-action="vector">VECTOR</button>
+              <button class="key small" data-action="qr">QR</button>
+              <button class="key small" data-action="store">STO</button>
+              <button class="key small" data-action="recall">RCL</button>
+              <button class="key small" data-action="constants">CONST</button>
+              <button class="key small" data-action="sd">S⇔D</button>
+              <button class="key small" data-action="back">REPLAY ↑</button>
+              <button class="key small" data-action="forward">REPLAY ↓</button>
+            </div>
+          </div>
+
+          <div class="module">
+            <div class="label">Base-N / Stats</div>
+            <div class="deck-grid">
+              <button class="key small" data-base="BIN">BIN</button>
+              <button class="key small" data-base="OCT">OCT</button>
+              <button class="key small active" data-base="DEC">DEC</button>
+              <button class="key small" data-base="HEX">HEX</button>
+              <button class="key small" data-action="stats">STAT</button>
+              <button class="key small" data-action="mathbox">MATHBOX</button>
+            </div>
+          </div>
+
+          <div class="module">
+            <div class="label">Number Pad / Operations</div>
+            <div class="deck-grid">
+              <button class="key danger" data-action="clear">AC</button>
+              <button class="key warn" data-action="delete">DEL</button>
+              <button class="key op" data-insert="(">(</button>
+              <button class="key op" data-insert=")">)</button>
+              <button class="key op" data-insert="%">%</button>
+              <button class="key op" data-insert="/">÷</button>
+              <button class="key num" data-insert="7">7</button>
+              <button class="key num" data-insert="8">8</button>
+              <button class="key num" data-insert="9">9</button>
+              <button class="key op" data-insert="*">×</button>
+              <button class="key small" data-insert="pi">π</button>
+              <button class="key small" data-insert="e">e</button>
+              <button class="key num" data-insert="4">4</button>
+              <button class="key num" data-insert="5">5</button>
+              <button class="key num" data-insert="6">6</button>
+              <button class="key op" data-insert="-">−</button>
+              <button class="key small" data-insert="A">A</button>
+              <button class="key small" data-insert="B">B</button>
+              <button class="key num" data-insert="1">1</button>
+              <button class="key num" data-insert="2">2</button>
+              <button class="key num" data-insert="3">3</button>
+              <button class="key op" data-insert="+">+</button>
+              <button class="key small" data-insert="X">X</button>
+              <button class="key small" data-insert="M">M</button>
+              <button class="key num wide" data-insert="0">0</button>
+              <button class="key num" data-insert=".">.</button>
+              <button class="key accent tall" data-action="equals">EXE</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel display-panel">
+        <div class="display-head">
+          <div class="panel-title">RIGHT PANEL // NATURAL TEXTBOOK DISPLAY</div>
+          <div class="input-line">
+            <input id="exprInput" class="expr-input" aria-label="Expression input" value="integrate(sin(x),0,3.14159)" />
+            <button class="key accent" id="runBtn">EXE</button>
+            <button class="key" id="menuBtn">MODE</button>
+          </div>
+        </div>
+
+        <div class="readouts">
+          <div class="readout"><strong>MODE</strong><span id="modeReadout">Calculate</span></div>
+          <div class="readout"><strong>ANGLE / RADIX</strong><span id="angleReadout">DEG // DEC</span></div>
+          <div class="readout"><strong>REGISTRY</strong><span id="memoryReadout">A=0 B=0 C=0 D=0 E=0 F=0 X=0 Y=0 M=0</span></div>
+        </div>
+
+        <div class="console" id="console">
+          <div class="console-line">
+            <div class="prompt"><span>BOOT // NATURAL DISPLAY</span><span>ready</span></div>
+            <div class="math">
+              <span class="integral">∫<sub>0</sub><sup>π</sup> sin(x) dx</span>
+              &nbsp; + &nbsp;
+              <span class="derivative"><span class="frac"><span class="top">d</span><span class="bot">dx</span></span>x²</span>
+              &nbsp; + &nbsp;
+              <span class="matrix" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>2</span><span>3</span><span>4</span></span>
+            </div>
+            <div class="result">Aarush terminal online. Enter an expression or launch a module.</div>
+          </div>
+        </div>
+
+        <div class="bottom-bar">
+          <div class="history" id="historyBar" aria-label="Replay history"></div>
+          <div class="chip-row">
+            <button class="chip" id="spreadsheetBtn">Spreadsheet</button>
+            <button class="chip" id="constantsBtn">Constants</button>
+            <button class="chip" id="mathboxBtn">MathBox</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <h2>Constants + Unit Conversions</h2>
+      <button class="chip" id="closeDrawer">Close</button>
+    </div>
+    <input class="field" id="searchIndex" placeholder="Search constants or conversions..." />
+    <div class="list" id="indexList"></div>
+  </aside>
+
+  <section class="modal" id="modal" aria-modal="true" role="dialog">
+    <div class="panel-head">
+      <h2 id="modalTitle">Module</h2>
+      <button class="chip" id="closeModal">Close</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </section>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+      const state = {
+        angle: "DEG",
+        base: "DEC",
+        mode: "Calculate",
+        expression: "integrate(sin(x),0,3.14159)",
+        history: [],
+        historyIndex: -1,
+        lastResult: 0,
+        displayCycle: 0,
+        eng: false,
+        memory: Object.fromEntries(["A","B","C","D","E","F","X","Y","M"].map(k => [k, 0])),
+        sheet: Array.from({ length: 4 }, () => Array(4).fill(""))
+      };
+
+      const constants = [
+        ["Speed of light", "c", 299792458, "m/s"], ["Planck constant", "h", 6.62607015e-34, "J s"],
+        ["Reduced Planck", "hbar", 1.054571817e-34, "J s"], ["Elementary charge", "e", 1.602176634e-19, "C"],
+        ["Avogadro constant", "NA", 6.02214076e23, "mol^-1"], ["Boltzmann constant", "k", 1.380649e-23, "J/K"],
+        ["Gas constant", "R", 8.314462618, "J/(mol K)"], ["Gravitational constant", "G", 6.67430e-11, "m^3 kg^-1 s^-2"],
+        ["Electron mass", "me", 9.1093837015e-31, "kg"], ["Proton mass", "mp", 1.67262192369e-27, "kg"],
+        ["Neutron mass", "mn", 1.67492749804e-27, "kg"], ["Vacuum permittivity", "eps0", 8.8541878128e-12, "F/m"],
+        ["Vacuum permeability", "mu0", 1.25663706212e-6, "N/A^2"], ["Fine structure", "alpha", 0.0072973525693, ""],
+        ["Rydberg constant", "Rinf", 10973731.568160, "m^-1"], ["Bohr radius", "a0", 5.29177210903e-11, "m"],
+        ["Bohr magneton", "muB", 9.2740100783e-24, "J/T"], ["Faraday constant", "F", 96485.33212, "C/mol"],
+        ["Stefan-Boltzmann", "sigma", 5.670374419e-8, "W m^-2 K^-4"], ["Wien displacement", "b", 2.897771955e-3, "m K"],
+        ["Standard gravity", "g", 9.80665, "m/s^2"], ["Atmosphere", "atm", 101325, "Pa"], ["Electron volt", "eV", 1.602176634e-19, "J"],
+        ["Atomic mass unit", "u", 1.66053906660e-27, "kg"], ["Coulomb constant", "ke", 8.9875517923e9, "N m^2/C^2"],
+        ["Solar mass", "Msun", 1.98847e30, "kg"], ["Astronomical unit", "AU", 1.495978707e11, "m"], ["Parsec", "pc", 3.085677581e16, "m"],
+        ["Light year", "ly", 9.460730472e15, "m"], ["Earth mass", "Mearth", 5.9722e24, "kg"], ["Earth radius", "Re", 6.371e6, "m"],
+        ["Magnetic flux quantum", "Phi0", 2.067833848e-15, "Wb"], ["Conductance quantum", "G0", 7.748091729e-5, "S"],
+        ["Josephson constant", "KJ", 4.835978484e14, "Hz/V"], ["von Klitzing", "RK", 25812.80745, "ohm"],
+        ["Molar volume STP", "Vm", 0.02241396954, "m^3/mol"], ["Sackur-Tetrode", "S0/R", -1.15170753706, ""],
+        ["Hartree energy", "Eh", 4.3597447222071e-18, "J"], ["Quantum circulation", "kappa", 3.6369475516e-4, "m^2/s"],
+        ["Loschmidt constant", "n0", 2.686780111e25, "m^-3"], ["First radiation", "c1", 3.741771852e-16, "W m^2"],
+        ["Second radiation", "c2", 0.01438776877, "m K"], ["Molar Planck", "NA h", 3.990312712e-10, "J s mol^-1"],
+        ["Shielded proton gyro", "gammaP", 2.675153151e8, "s^-1 T^-1"], ["Tau mass energy", "tau", 1776.86, "MeV"],
+        ["Muon mass energy", "mu", 105.6583755, "MeV"], ["Classical electron radius", "re", 2.8179403262e-15, "m"]
+      ];
+
+      const conversions = [
+        ["m to ft", 3.280839895], ["ft to m", .3048], ["km to mi", .621371192], ["mi to km", 1.609344],
+        ["kg to lb", 2.204622622], ["lb to kg", .45359237], ["C to F", "x*9/5+32"], ["F to C", "(x-32)*5/9"],
+        ["K to C", "x-273.15"], ["C to K", "x+273.15"], ["J to cal", .239005736], ["cal to J", 4.184],
+        ["Pa to atm", 9.869232667e-6], ["atm to Pa", 101325], ["N to lbf", .224808943], ["lbf to N", 4.448221615],
+        ["W to hp", .00134102209], ["hp to W", 745.699872], ["rad to deg", 57.295779513], ["deg to rad", .01745329252],
+        ["L to gal", .264172052], ["gal to L", 3.785411784], ["m/s to km/h", 3.6], ["km/h to m/s", .277777778],
+        ["m/s to mph", 2.236936292], ["mph to m/s", .44704], ["bar to Pa", 100000], ["Pa to bar", .00001],
+        ["T to gauss", 10000], ["gauss to T", .0001], ["eV to J", 1.602176634e-19], ["J to eV", 6.241509074e18],
+        ["acre to m2", 4046.856422], ["m2 to acre", .000247105], ["ha to acre", 2.471053814], ["acre to ha", .404685642],
+        ["byte to bit", 8], ["bit to byte", .125], ["kWh to J", 3600000], ["J to kWh", 2.777777778e-7],
+        ["psi to Pa", 6894.757293], ["Pa to psi", .000145038], ["nm to m", 1e-9], ["m to nm", 1e9]
+      ];
+
+      const input = $("#exprInput");
+      const consoleEl = $("#console");
+      const historyBar = $("#historyBar");
+      const modal = $("#modal");
+      const modalTitle = $("#modalTitle");
+      const modalBody = $("#modalBody");
+      const overlay = $("#overlay");
+      const drawer = $("#drawer");
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+      }
+
+      function toRad(value) {
+        return state.angle === "DEG" ? value * Math.PI / 180 : value;
+      }
+
+      function fromRad(value) {
+        return state.angle === "DEG" ? value * 180 / Math.PI : value;
+      }
+
+      const mathScope = {
+        sin: x => Math.sin(toRad(x)),
+        cos: x => Math.cos(toRad(x)),
+        tan: x => Math.tan(toRad(x)),
+        asin: x => fromRad(Math.asin(x)),
+        acos: x => fromRad(Math.acos(x)),
+        atan: x => fromRad(Math.atan(x)),
+        sinh: Math.sinh,
+        cosh: Math.cosh,
+        tanh: Math.tanh,
+        sqrt: Math.sqrt,
+        abs: Math.abs,
+        round: Math.round,
+        floor: Math.floor,
+        ceil: Math.ceil,
+        log: Math.log10,
+        ln: Math.log,
+        exp: Math.exp,
+        pi: Math.PI,
+        e: Math.E
+      };
+
+      function normalizeExpression(expr, xValue) {
+        let out = expr.trim();
+        out = out.replace(/÷/g, "/").replace(/×/g, "*").replace(/−/g, "-");
+        out = out.replace(/\^/g, "**");
+        out = out.replace(/π/g, "pi");
+        if (typeof xValue === "number") out = out.replace(/\bx\b/gi, `(${xValue})`);
+        for (const [key, val] of Object.entries(state.memory)) {
+          out = out.replace(new RegExp(`\\b${key}\\b`, "g"), `(${val})`);
+        }
+        return out;
+      }
+
+      function evaluate(expr, xValue) {
+        const normalized = normalizeExpression(expr, xValue);
+        if (/[^-+*/%().,\d\sA-Za-z_*]/.test(normalized)) throw new Error("Unsupported token");
+        const argNames = Object.keys(mathScope);
+        const argVals = Object.values(mathScope);
+        return Function(...argNames, `"use strict"; return (${normalized});`)(...argVals);
+      }
+
+      function integrate(expr, a, b, n = 800) {
+        n = n % 2 === 0 ? n : n + 1;
+        const h = (b - a) / n;
+        let sum = evaluate(expr, a) + evaluate(expr, b);
+        for (let i = 1; i < n; i++) {
+          const x = a + i * h;
+          sum += evaluate(expr, x) * (i % 2 === 0 ? 2 : 4);
+        }
+        return sum * h / 3;
+      }
+
+      function derivative(expr, x) {
+        const h = Math.max(1e-6, Math.abs(x) * 1e-6);
+        return (evaluate(expr, x + h) - evaluate(expr, x - h)) / (2 * h);
+      }
+
+      function factorize(n) {
+        n = Math.abs(Math.trunc(n));
+        if (n < 2) return String(n);
+        const parts = [];
+        for (let p = 2; p * p <= n; p += p === 2 ? 1 : 2) {
+          let count = 0;
+          while (n % p === 0) { n /= p; count++; }
+          if (count) parts.push(count > 1 ? `${p}<sup>${count}</sup>` : `${p}`);
+        }
+        if (n > 1) parts.push(`${n}`);
+        return parts.join(" × ");
+      }
+
+      function gcd(a, b) {
+        a = Math.abs(a); b = Math.abs(b);
+        while (b) [a, b] = [b, a % b];
+        return a;
+      }
+
+      function fractionHtml(value) {
+        if (!Number.isFinite(value)) return escapeHtml(value);
+        const sign = value < 0 ? "-" : "";
+        value = Math.abs(value);
+        const maxDen = 10000;
+        let bestN = Math.round(value), bestD = 1, bestErr = Math.abs(value - bestN);
+        for (let d = 1; d <= maxDen; d++) {
+          const n = Math.round(value * d);
+          const err = Math.abs(value - n / d);
+          if (err < bestErr) { bestN = n; bestD = d; bestErr = err; }
+          if (err < 1e-10) break;
+        }
+        const g = gcd(bestN, bestD);
+        bestN /= g; bestD /= g;
+        if (bestD === 1) return sign + bestN;
+        return `${sign}<span class="frac"><span class="top">${bestN}</span><span class="bot">${bestD}</span></span>`;
+      }
+
+      function radicalHtml(value) {
+        const candidates = [
+          [2, Math.SQRT2], [3, Math.sqrt(3)], [5, Math.sqrt(5)], [6, Math.sqrt(6)],
+          [7, Math.sqrt(7)], [10, Math.sqrt(10)], [12, Math.sqrt(12)]
+        ];
+        for (const [rad, root] of candidates) {
+          const k = value / root;
+          if (Math.abs(k - Math.round(k)) < 1e-8 && Math.round(k) !== 0) {
+            const coeff = Math.round(k);
+            return `${coeff === 1 ? "" : coeff === -1 ? "-" : coeff}<span class="sqrt">${rad}</span>`;
+          }
+        }
+        return fractionHtml(value);
+      }
+
+      function formatNumber(value) {
+        if (typeof value !== "number" || !Number.isFinite(value)) return escapeHtml(value);
+        if (state.base !== "DEC") {
+          const radix = { BIN: 2, OCT: 8, HEX: 16 }[state.base];
+          return `${Math.trunc(value).toString(radix).toUpperCase()}<span class="muted"> ${state.base}</span>`;
+        }
+        if (state.eng && value !== 0) return engineering(value);
+        if (state.displayCycle === 1) return fractionHtml(value);
+        if (state.displayCycle === 2) return radicalHtml(value);
+        return Number(value.toPrecision(12)).toString();
+      }
+
+      function engineering(value) {
+        const prefixes = { "-12": "p", "-9": "n", "-6": "µ", "-3": "m", "0": "", "3": "k", "6": "M", "9": "G", "12": "T" };
+        const exp = Math.max(-12, Math.min(12, Math.floor(Math.log10(Math.abs(value)) / 3) * 3));
+        const scaled = value / Math.pow(10, exp);
+        return `${Number(scaled.toPrecision(8))} ${prefixes[exp] || `e${exp}`}`;
+      }
+
+      function textbook(expr) {
+        let safe = escapeHtml(expr).replace(/\*\*/g, "^");
+        safe = safe.replace(/integrate\((.*?),\s*([-.\d]+),\s*([-.\d]+)\)/i, (_, fn, a, b) =>
+          `<span class="integral">∫<sub>${a}</sub><sup>${b}</sup> ${escapeHtml(fn)} dx</span>`);
+        safe = safe.replace(/derivative\((.*?),\s*([-.\d]+)\)/i, (_, fn, x) =>
+          `<span class="derivative"><span class="frac"><span class="top">d</span><span class="bot">dx</span></span>${escapeHtml(fn)} <span class="muted">at x=${x}</span></span>`);
+        safe = safe.replace(/sqrt\((.*?)\)/g, `<span class="sqrt">$1</span>`);
+        safe = safe.replace(/\bpi\b/g, "π");
+        return safe;
+      }
+
+      function addLine(expr, result, tag = state.mode) {
+        const line = document.createElement("div");
+        line.className = "console-line";
+        line.innerHTML = `
+          <div class="prompt"><span>${escapeHtml(tag)} // ${new Date().toLocaleTimeString()}</span><span>${escapeHtml(state.angle)} | ${escapeHtml(state.base)}</span></div>
+          <div class="math">${textbook(expr)}</div>
+          <div class="result">${result}</div>`;
+        consoleEl.prepend(line);
+      }
+
+      function execute(expr = input.value) {
+        state.expression = expr.trim();
+        if (!state.expression) return;
+        try {
+          let value;
+          const integralMatch = state.expression.match(/^integrate\((.*),\s*([-\d.]+),\s*([-\d.]+)\)$/i);
+          const derivativeMatch = state.expression.match(/^derivative\((.*),\s*([-\d.]+)\)$/i);
+          if (integralMatch) value = integrate(integralMatch[1], Number(integralMatch[2]), Number(integralMatch[3]));
+          else if (derivativeMatch) value = derivative(derivativeMatch[1], Number(derivativeMatch[2]));
+          else value = evaluate(state.expression);
+          state.lastResult = value;
+          pushHistory(state.expression);
+          addLine(state.expression, `= ${formatNumber(value)}`);
+          renderHistory();
+        } catch (error) {
+          addLine(state.expression, `<span style="color:var(--danger)">ERROR: ${escapeHtml(error.message)}</span>`, "DIAGNOSTIC");
+        }
+      }
+
+      function pushHistory(expr) {
+        if (state.history[0] !== expr) state.history.unshift(expr);
+        state.history = state.history.slice(0, 18);
+        state.historyIndex = -1;
+      }
+
+      function renderHistory() {
+        historyBar.innerHTML = "";
+        state.history.forEach((expr, index) => {
+          const btn = document.createElement("button");
+          btn.className = "chip";
+          btn.textContent = expr;
+          btn.title = "Recall and edit this formula";
+          btn.addEventListener("click", () => {
+            input.value = expr;
+            state.historyIndex = index;
+            input.focus();
+          });
+          historyBar.appendChild(btn);
+        });
+      }
+
+      function updateReadouts() {
+        $("#modeReadout").textContent = state.mode;
+        $("#angleReadout").textContent = `${state.angle} // ${state.base}`;
+        $("#memoryReadout").textContent = Object.entries(state.memory).map(([k, v]) => `${k}=${Number(v).toPrecision(4)}`).join(" ");
+      }
+
+      function insert(text) {
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        input.value = input.value.slice(0, start) + text + input.value.slice(end);
+        input.focus();
+        input.selectionStart = input.selectionEnd = start + text.length;
+      }
+
+      function showModal(title, body) {
+        modalTitle.textContent = title;
+        modalBody.innerHTML = body;
+        overlay.classList.add("open");
+        modal.classList.add("open");
+      }
+
+      function closeModal() {
+        overlay.classList.remove("open");
+        modal.classList.remove("open");
+      }
+
+      function showMenu() {
+        const modes = ["Calculate", "Complex", "Base-N", "Matrix", "Vector", "Statistics", "Distribution", "Spreadsheet", "MathBox"];
+        showModal("Icon Menu // Mode Grid", `<div class="mode-grid">${modes.map(m => `
+          <button class="mode-card" data-mode="${m}">
+            <strong>${m}</strong><span class="muted">${modeDescription(m)}</span>
+          </button>`).join("")}</div>`);
+        $$("[data-mode]", modalBody).forEach(btn => btn.addEventListener("click", () => {
+          state.mode = btn.dataset.mode;
+          updateReadouts();
+          closeModal();
+          if (state.mode === "Spreadsheet") showSpreadsheet();
+          if (state.mode === "MathBox") showMathbox();
+          if (state.mode === "Matrix") showMatrix();
+          addLine("mode", `Switched to ${escapeHtml(state.mode)}`, "SYSTEM");
+        }));
+      }
+
+      function modeDescription(mode) {
+        return ({
+          "Calculate": "Standard scientific evaluation",
+          "Complex": "Complex-number visual workspace",
+          "Base-N": "Binary, octal, decimal, hexadecimal",
+          "Matrix": "4x4 matrix desk and inverse",
+          "Vector": "Vector magnitude and dot/cross products",
+          "Statistics": "Data summaries and regression shell",
+          "Distribution": "Normal, binomial, and random tools",
+          "Spreadsheet": "Reactive 4x4 formula grid",
+          "MathBox": "Probability simulations"
+        })[mode];
+      }
+
+      function showQR() {
+        const text = "https://graph.iith.ac.in/aarush/online-graph-visualization";
+        let bits = "";
+        for (let i = 0; i < 625; i++) {
+          const ch = text.charCodeAt(i % text.length);
+          bits += ((i * 31 + ch * 17 + Math.floor(i / 7)) % 5 < 2) ? "1" : "0";
+        }
+        const cells = bits.split("").map((b, i) => {
+          const x = i % 25, y = Math.floor(i / 25);
+          const finder = (x < 7 && y < 7) || (x > 17 && y < 7) || (x < 7 && y > 17);
+          const ring = finder && (x % 6 === 0 || y % 6 === 0 || (x > 1 && x < 5 && y > 1 && y < 5) || (x > 19 && x < 23 && y > 1 && y < 5) || (x > 1 && x < 5 && y > 19 && y < 23));
+          return `<span class="${ring || b === "1" ? "on" : "off"}"></span>`;
+        }).join("");
+        addLine("QR: Online Graph Visualization", `<div class="qr" aria-label="Mock QR code">${cells}</div><div class="muted">${text}</div>`, "UTILITY");
+      }
+
+      function showIntegralPrompt() {
+        showModal("Calculus // Numerical Integration", `
+          <div class="mini-grid">
+            <input class="field" id="intFn" value="sin(x)" placeholder="f(x)" />
+            <input class="field" id="intA" value="0" placeholder="lower bound" />
+            <input class="field" id="intB" value="3.14159" placeholder="upper bound" />
+            <button class="key accent" id="runIntegral">Integrate</button>
+          </div>`);
+        $("#runIntegral").addEventListener("click", () => {
+          const expr = `integrate(${$("#intFn").value},${$("#intA").value},${$("#intB").value})`;
+          input.value = expr; closeModal(); execute(expr);
+        });
+      }
+
+      function showDerivativePrompt() {
+        showModal("Calculus // Numerical Differentiation", `
+          <div class="mini-grid">
+            <input class="field" id="derFn" value="x^2+sin(x)" placeholder="f(x)" />
+            <input class="field" id="derX" value="2" placeholder="x" />
+            <button class="key accent" id="runDerivative">Differentiate</button>
+          </div>`);
+        $("#runDerivative").addEventListener("click", () => {
+          const expr = `derivative(${$("#derFn").value},${$("#derX").value})`;
+          input.value = expr; closeModal(); execute(expr);
+        });
+      }
+
+      function solveLinear(matrix, vector) {
+        const n = matrix.length;
+        const a = matrix.map((row, i) => [...row, vector[i]]);
+        for (let i = 0; i < n; i++) {
+          let max = i;
+          for (let r = i + 1; r < n; r++) if (Math.abs(a[r][i]) > Math.abs(a[max][i])) max = r;
+          [a[i], a[max]] = [a[max], a[i]];
+          const pivot = a[i][i];
+          if (Math.abs(pivot) < 1e-12) throw new Error("Singular system");
+          for (let c = i; c <= n; c++) a[i][c] /= pivot;
+          for (let r = 0; r < n; r++) if (r !== i) {
+            const f = a[r][i];
+            for (let c = i; c <= n; c++) a[r][c] -= f * a[i][c];
+          }
+        }
+        return a.map(row => row[n]);
+      }
+
+      function showSolver() {
+        showModal("Equation Solver // Linear up to 4 Unknowns", `
+          <div class="muted">Enter rows as coefficients followed by result. Example: 2,1,5 solves 2x + y = 5.</div>
+          <select class="select" id="solverN"><option>2</option><option>3</option><option>4</option></select>
+          <div id="solverRows" class="list"></div>
+          <button class="key accent" id="runSolver">Solve System</button>
+          <div class="muted">Polynomial helper: enter coefficients highest degree first.</div>
+          <input class="field" id="polyCoeffs" value="1,-5,6" />
+          <button class="key" id="runPoly">Solve Polynomial</button>`);
+        const rows = $("#solverRows");
+        const build = () => {
+          const n = Number($("#solverN").value);
+          rows.innerHTML = Array.from({ length: n }, (_, i) => `<input class="field" value="${i === 0 ? "2,1,5" : "1,-1,1"}" />`).join("");
+        };
+        $("#solverN").addEventListener("change", build); build();
+        $("#runSolver").addEventListener("click", () => {
+          const n = Number($("#solverN").value);
+          const data = $$("input", rows).map(el => el.value.split(",").map(Number));
+          const m = data.map(row => row.slice(0, n));
+          const v = data.map(row => row[n]);
+          const sol = solveLinear(m, v);
+          closeModal();
+          addLine("linear system", sol.map((v, i) => `${"xyzw"[i]}=${formatNumber(v)}`).join(" &nbsp; "), "SOLVER");
+        });
+        $("#runPoly").addEventListener("click", () => {
+          const coeffs = $("#polyCoeffs").value.split(",").map(Number);
+          const roots = approximateRoots(coeffs);
+          closeModal();
+          addLine(`poly(${coeffs.join(",")})`, roots.map(r => formatNumber(r)).join(", "), "POLYNOMIAL");
+        });
+      }
+
+      function approximateRoots(coeffs) {
+        const f = x => coeffs.reduce((acc, c) => acc * x + c, 0);
+        const roots = [];
+        for (let x = -100; x <= 100; x += .25) {
+          const y1 = f(x), y2 = f(x + .25);
+          if (y1 === 0 || y1 * y2 < 0) {
+            let lo = x, hi = x + .25;
+            for (let i = 0; i < 50; i++) {
+              const mid = (lo + hi) / 2;
+              if (f(lo) * f(mid) <= 0) hi = mid; else lo = mid;
+            }
+            const root = (lo + hi) / 2;
+            if (!roots.some(r => Math.abs(r - root) < .01)) roots.push(root);
+          }
+        }
+        return roots.length ? roots.slice(0, 4) : ["No real roots found"];
+      }
+
+      function matrixHtml(mat) {
+        return `<span class="matrix" style="grid-template-columns:repeat(${mat[0].length},auto)">${mat.flat().map(v => `<span>${formatNumber(v)}</span>`).join("")}</span>`;
+      }
+
+      function multiplyMatrices(a, b) {
+        return a.map(row => b[0].map((_, c) => row.reduce((sum, val, k) => sum + val * b[k][c], 0)));
+      }
+
+      function invertMatrix(matrix) {
+        const n = matrix.length;
+        const a = matrix.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => i === j ? 1 : 0)]);
+        for (let i = 0; i < n; i++) {
+          let max = i;
+          for (let r = i + 1; r < n; r++) if (Math.abs(a[r][i]) > Math.abs(a[max][i])) max = r;
+          [a[i], a[max]] = [a[max], a[i]];
+          const pivot = a[i][i];
+          if (Math.abs(pivot) < 1e-12) throw new Error("Matrix not invertible");
+          for (let c = 0; c < 2 * n; c++) a[i][c] /= pivot;
+          for (let r = 0; r < n; r++) if (r !== i) {
+            const f = a[r][i];
+            for (let c = 0; c < 2 * n; c++) a[r][c] -= f * a[i][c];
+          }
+        }
+        return a.map(row => row.slice(n));
+      }
+
+      function showMatrix() {
+        showModal("Matrix Desk // 4x4 Multiply + Invert", `
+          <div class="mini-grid">
+            <textarea class="field" id="matA" style="min-height:120px">1,2\n3,4</textarea>
+            <textarea class="field" id="matB" style="min-height:120px">5,6\n7,8</textarea>
+          </div>
+          <div class="chip-row">
+            <button class="key accent" id="matMul">A × B</button>
+            <button class="key" id="matInv">A⁻¹</button>
+          </div>`);
+        const parse = id => $(id).value.trim().split(/\n+/).map(row => row.split(",").map(Number));
+        $("#matMul").addEventListener("click", () => {
+          const res = multiplyMatrices(parse("#matA"), parse("#matB"));
+          closeModal(); addLine("Matrix A × B", matrixHtml(res), "MATRIX");
+        });
+        $("#matInv").addEventListener("click", () => {
+          const res = invertMatrix(parse("#matA"));
+          closeModal(); addLine("Matrix A⁻¹", matrixHtml(res), "MATRIX");
+        });
+      }
+
+      function showSpreadsheet() {
+        const cols = ["", "A", "B", "C", "D"];
+        showModal("Spreadsheet Mode // Reactive 4x4 Grid", `
+          <div id="spreadsheet" class="sheet">
+            ${cols.map(c => `<div class="cell-head">${c}</div>`).join("")}
+            ${Array.from({ length: 4 }, (_, r) => `<div class="cell-head">${r + 1}</div>${Array.from({ length: 4 }, (_, c) =>
+              `<input class="cell" data-r="${r}" data-c="${c}" value="${escapeHtml(state.sheet[r][c])}" placeholder="${cols[c + 1]}${r + 1}" />`).join("")}`).join("")}
+          </div>
+          <button class="key accent" id="evalSheet">Evaluate Sheet</button>
+          <div id="sheetOut" class="list"></div>`);
+        $("#evalSheet").addEventListener("click", () => {
+          $$(".cell", modalBody).forEach(cell => state.sheet[cell.dataset.r][cell.dataset.c] = cell.value);
+          const values = computeSheet();
+          $("#sheetOut").innerHTML = values.map((row, r) => `<div class="list-item">${row.map((v, c) => `${String.fromCharCode(65+c)}${r+1}: ${escapeHtml(v)}`).join(" &nbsp; ")}</div>`).join("");
+        });
+      }
+
+      function computeSheet() {
+        const cache = {};
+        const get = (r, c) => {
+          const key = `${r},${c}`;
+          if (cache[key] !== undefined) return cache[key];
+          let raw = state.sheet[r][c] || "0";
+          if (raw.startsWith("=")) {
+            let expr = raw.slice(1).replace(/[A-D][1-4]/g, ref => {
+              const col = ref.charCodeAt(0) - 65;
+              const row = Number(ref[1]) - 1;
+              return get(row, col);
+            });
+            cache[key] = evaluate(expr);
+          } else cache[key] = Number(raw) || raw || 0;
+          return cache[key];
+        };
+        return Array.from({ length: 4 }, (_, r) => Array.from({ length: 4 }, (_, c) => get(r, c)));
+      }
+
+      function showMathbox() {
+        showModal("MathBox // Probability Simulator", `
+          <div class="tool-grid" id="mathbox">
+            <button class="key accent" id="coin">Coin Toss</button>
+            <button class="key accent" id="dice">Dice Roll</button>
+            <button class="key" id="resetSim">Reset</button>
+            <button class="key" id="burstSim">Run 100</button>
+          </div>
+          <div class="list" id="simOut"></div>`);
+        const sim = { heads: 0, tails: 0, dice: [0,0,0,0,0,0] };
+        const render = () => $("#simOut").innerHTML = `
+          <div class="list-item">Coin: H=${sim.heads} T=${sim.tails} P(H)=${((sim.heads/(sim.heads+sim.tails||1))*100).toFixed(1)}%</div>
+          <div class="list-item">Dice: ${sim.dice.map((v,i) => `${i+1}:${v}`).join(" | ")}</div>`;
+        $("#coin").addEventListener("click", () => { Math.random() > .5 ? sim.heads++ : sim.tails++; render(); });
+        $("#dice").addEventListener("click", () => { sim.dice[Math.floor(Math.random() * 6)]++; render(); });
+        $("#resetSim").addEventListener("click", () => { sim.heads = sim.tails = 0; sim.dice.fill(0); render(); });
+        $("#burstSim").addEventListener("click", () => { for (let i = 0; i < 100; i++) { Math.random() > .5 ? sim.heads++ : sim.tails++; sim.dice[Math.floor(Math.random() * 6)]++; } render(); });
+        render();
+      }
+
+      function renderIndex() {
+        const query = $("#searchIndex").value.toLowerCase();
+        const constItems = constants
+          .filter(([name, sym]) => `${name} ${sym}`.toLowerCase().includes(query))
+          .map(([name, sym, val, unit]) => `<div class="list-item"><strong>${name} (${sym})</strong><span>${val} ${unit}</span><button class="chip" data-value="${val}">Insert</button></div>`);
+        const convItems = conversions
+          .filter(([name]) => name.toLowerCase().includes(query))
+          .map(([name, factor]) => `<div class="list-item"><strong>${name}</strong><span>${factor}</span><button class="chip" data-conv="${name}" data-value="${factor}">Use</button></div>`);
+        $("#indexList").innerHTML = [...constItems, ...convItems].join("");
+        $$("[data-value]", $("#indexList")).forEach(btn => btn.addEventListener("click", () => {
+          const val = btn.dataset.value;
+          if (/x/.test(val)) addLine(btn.dataset.conv, `Formula: ${escapeHtml(val)}`, "CONVERSION");
+          else insert(String(val));
+        }));
+      }
+
+      function openDrawer() {
+        drawer.classList.add("open");
+        overlay.classList.add("open");
+        renderIndex();
+      }
+
+      function handleAction(action) {
+        if (action === "equals") execute();
+        if (action === "clear") input.value = "";
+        if (action === "delete") input.value = input.value.slice(0, -1);
+        if (action === "menu") showMenu();
+        if (action === "qr") showQR();
+        if (action === "integral") showIntegralPrompt();
+        if (action === "derivative") showDerivativePrompt();
+        if (action === "factor") {
+          const n = Number(state.lastResult || evaluate(input.value || "0"));
+          addLine(`factor(${n})`, factorize(n), "PRIME FACTORIZATION");
+        }
+        if (action === "ranint") {
+          const value = Math.floor(Math.random() * 100) + 1;
+          state.lastResult = value;
+          addLine("RanInt(1,100)", formatNumber(value), "RANDOM");
+        }
+        if (action === "sd") {
+          state.displayCycle = (state.displayCycle + 1) % 3;
+          addLine("S⇔D", `Display format: ${["Decimal", "Fraction", "Radical/Fraction"][state.displayCycle]} | Ans = ${formatNumber(state.lastResult)}`, "DISPLAY");
+        }
+        if (action === "solver") showSolver();
+        if (action === "matrix" || action === "vector") showMatrix();
+        if (action === "spreadsheet") showSpreadsheet();
+        if (action === "mathbox" || action === "stats") showMathbox();
+        if (action === "constants") openDrawer();
+        if (action === "store") storeMemory();
+        if (action === "recall") recallMemory();
+        if (action === "back" || action === "forward") replay(action);
+      }
+
+      function storeMemory() {
+        const key = prompt("Store Ans into register A, B, C, D, E, F, X, Y, or M:", "A");
+        if (!key) return;
+        const reg = key.toUpperCase();
+        if (reg in state.memory) {
+          state.memory[reg] = Number(state.lastResult) || 0;
+          updateReadouts();
+          addLine(`STO ${reg}`, `${reg} = ${formatNumber(state.memory[reg])}`, "MEMORY");
+        }
+      }
+
+      function recallMemory() {
+        const key = prompt("Recall register A, B, C, D, E, F, X, Y, or M:", "A");
+        if (!key) return;
+        const reg = key.toUpperCase();
+        if (reg in state.memory) insert(String(state.memory[reg]));
+      }
+
+      function replay(dir) {
+        if (!state.history.length) return;
+        if (dir === "back") state.historyIndex = Math.min(state.historyIndex + 1, state.history.length - 1);
+        else state.historyIndex = Math.max(state.historyIndex - 1, 0);
+        input.value = state.history[state.historyIndex] || state.history[0];
+        input.focus();
+      }
+
+      $$(".key").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (btn.dataset.insert) insert(btn.dataset.insert);
+          if (btn.dataset.action) handleAction(btn.dataset.action);
+          if (btn.dataset.base) {
+            state.base = btn.dataset.base;
+            $$("[data-base]").forEach(b => b.classList.toggle("active", b === btn));
+            updateReadouts();
+            addLine("radix", `Base-N switched to ${state.base}. Current Ans: ${formatNumber(state.lastResult)}`, "BASE-N");
+          }
+        });
+      });
+
+      $$("[data-angle]").forEach(btn => btn.addEventListener("click", () => {
+        state.angle = btn.dataset.angle;
+        $$("[data-angle]").forEach(b => b.classList.toggle("active", b === btn));
+        updateReadouts();
+      }));
+
+      $("#runBtn").addEventListener("click", () => execute());
+      $("#menuBtn").addEventListener("click", showMenu);
+      $("#closeModal").addEventListener("click", closeModal);
+      overlay.addEventListener("click", () => { closeModal(); drawer.classList.remove("open"); overlay.classList.remove("open"); });
+      $("#spreadsheetBtn").addEventListener("click", showSpreadsheet);
+      $("#constantsBtn").addEventListener("click", openDrawer);
+      $("#mathboxBtn").addEventListener("click", showMathbox);
+      $("#closeDrawer").addEventListener("click", () => { drawer.classList.remove("open"); overlay.classList.remove("open"); });
+      $("#searchIndex").addEventListener("input", renderIndex);
+      $("#engToggle").addEventListener("click", event => {
+        state.eng = !state.eng;
+        event.currentTarget.classList.toggle("active", state.eng);
+        addLine("ENG", `Engineering notation ${state.eng ? "enabled" : "disabled"} | Ans = ${formatNumber(state.lastResult)}`, "DISPLAY");
+      });
+
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") execute();
+        if (event.key === "ArrowUp") replay("back");
+        if (event.key === "ArrowDown") replay("forward");
+      });
+
+      updateReadouts();
+      renderHistory();
+      setTimeout(() => execute(input.value), 220);
+    })();
+  </script>
+</body>
+</html>
